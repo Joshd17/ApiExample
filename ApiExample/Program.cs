@@ -1,8 +1,10 @@
-using ApiExample.SignalR.Hub;
+using ApiExample;
+using Dip.Application.Features.Dip.Commands;
+using Dip.Infrastructure.Contexts;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddSignalR();
+builder.Services.AddMongoConventions();
+builder.Services.AddMediatR(typeof(Program), typeof(CreateDipCommandHandler));
+builder.Services.AddSingleton<MongoContext>();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new() { Title = "ApiExample", Version = "v1" });

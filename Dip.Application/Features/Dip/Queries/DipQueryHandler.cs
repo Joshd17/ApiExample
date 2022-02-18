@@ -1,24 +1,45 @@
-﻿using MediatR;
+﻿using Dip.Domain;
+using Dip.Domain.Aggregates;
+using Dip.Infrastructure.Contexts;
+using MediatR;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Dip.Application.Features.Dip.Queries
+namespace Dip.Application.Features.Dip.Queries;
+
+public class DipQueryHandler : IRequestHandler<DipQuery,IEnumerable<DipsWithAudits>>
 {
-    public class DipQueryHandler : IRequestHandler<DipQuery>
+    private readonly MongoContext _mongoContext;
+
+    public DipQueryHandler(MongoContext mongoContext)
     {
-        public Task<Unit> Handle(DipQuery request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
+        _mongoContext = mongoContext;
     }
-
-    public class DipQuery : IRequest
+    public async Task<IEnumerable<DipsWithAudits>> Handle(DipQuery request, CancellationToken cancellationToken)
     {
+        var pipeline = new EmptyPipelineDefinition<DecisionInPrinciple>();
 
+        var test = await _mongoContext.DipCollection.Aggregate().Lookup<DecisionInPrinciple, Audit, DipsWithAudits>(_mongoContext.AuditCollection,
+            dip => dip.Id,
+            lookupValue => lookupValue.ObjectId,
+            test => test.Audits).ToListAsync(cancellationToken);
+
+        return test;
     }
+}
 
+public class DipsWithAudits
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; }
+    public IEnumerable<Question> Questions { get; private set; }
+    public IEnumerable<Audit> Audits { get; set; }
+}
+
+public class DipQuery : IRequest<IEnumerable<DipsWithAudits>>
+{
+    public bool IncludeAudits { get; set; } = false;
 }

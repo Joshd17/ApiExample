@@ -13,10 +13,10 @@ namespace Dip.Infrastructure.Contexts
         private readonly MongoClient _client;
         private readonly IMongoDatabase _db;
 
-        public MongoContext(MongoClient client)
+        public MongoContext()
         {
-            _client = client;
-            _db = _client.GetDatabase("database");
+            _client = new MongoClient("mongodb://localhost");
+            _db = _client.GetDatabase("decisioninprinciple");
         }
 
         public IMongoCollection<T> GetCollection<T>(string name)
@@ -24,5 +24,7 @@ namespace Dip.Infrastructure.Contexts
             return _db.GetCollection<T>(name);
         }
         public IMongoCollection<DecisionInPrinciple> DipCollection => _db.GetCollection<DecisionInPrinciple>("dip");
+        public IMongoCollection<Audit> AuditCollection => _db.GetCollection<Audit>("audit");
+
     }
 }

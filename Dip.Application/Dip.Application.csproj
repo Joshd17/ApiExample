@@ -6,13 +6,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR" Version="9.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.9" />
-    <PackageReference Include="MongoDB.Driver" Version="2.13.1" />
+    <PackageReference Include="MediatR" Version="10.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.1" />
+    <PackageReference Include="MongoDB.Driver" Version="2.14.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Dip.Domain\Dip.Domain.csproj" />
+    <ProjectReference Include="..\Dip.Infrastructure\Dip.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
